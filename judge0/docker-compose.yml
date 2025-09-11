@@ -1,0 +1,85 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: judge0
+      POSTGRES_PASSWORD: judge0
+      POSTGRES_DB: judge0
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U judge0"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:6
+    restart: always
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory", "256mb", "--maxmemory-policy", "allkeys-lru"]
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  judge0server:
+    image: judge0/judge0:latest
+    ports:
+      - "2358:2358"
+    environment:
+      DATABASE_URL: postgresql://judge0:judge0@postgres:5432/judge0
+      REDIS_HOST: redis
+      
+      # CRITICAL: These settings prevent timeouts
+      ENABLE_WAIT_RESULT: true
+      CPU_TIME_LIMIT: 5.0
+      CPU_EXTRA_TIME: 1.0
+      WALL_TIME_LIMIT: 10.0
+      MEMORY_LIMIT: 256000
+      STACK_LIMIT: 64000
+      MAX_PROCESSES_AND_OR_THREADS: 60
+      
+      # Worker configuration for better performance
+      INTERVAL: 0.1
+      COUNT: 5
+      
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    privileged: true
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:2358/system_info"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+
+  judge0worker:
+    image: judge0/judge0:latest
+    command: ["./scripts/workers"]
+    environment:
+      DATABASE_URL: postgresql://judge0:judge0@postgres:5432/judge0
+      REDIS_HOST: redis
+      
+      # More workers for parallel processing
+      INTERVAL: 0.1
+      COUNT: 5
+      
+    depends_on:
+      judge0server:
+        condition: service_healthy
+    privileged: true
+    restart: always
+
+volumes:
+  postgres-data:
+  redis-data:
