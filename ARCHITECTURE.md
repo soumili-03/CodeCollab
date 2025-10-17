@@ -1,17 +1,5 @@
 # CodeCollab - System Architecture Documentation
 
-## Table of Contents
-1. [Architecture Overview](#architecture-overview)
-2. [System Components](#system-components)
-3. [Data Flow Diagrams](#data-flow-diagrams)
-4. [Technology Stack](#technology-stack)
-5. [Database Schema](#database-schema)
-6. [API Design](#api-design)
-7. [Security Architecture](#security-architecture)
-8. [Deployment Architecture](#deployment-architecture)
-
----
-
 ## 1. Architecture Overview
 
 CodeCollab follows a **three-tier architecture** with clear separation of concerns:
