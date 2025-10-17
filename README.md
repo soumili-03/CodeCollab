@@ -16,6 +16,13 @@ Competitive programming platforms like LeetCode and HackerRank excel at individu
 
 ---
 
+## Home Page with probelms
+<img width="1190" height="914" alt="Screenshot 2025-10-17 153142" src="https://github.com/user-attachments/assets/e974ca00-ea1c-48e5-acae-8dc4644369cb" />
+
+## Coding Enviornment
+<img width="1045" height="914" alt="Screenshot 2025-10-17 151723" src="https://github.com/user-attachments/assets/30f93054-bc8e-4a66-8592-477776c75a6c" />
+
+
 ## 🚀 Core Features
 
 ### 1. **Individual Problem Solving**
