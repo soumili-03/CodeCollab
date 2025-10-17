@@ -1,0 +1,381 @@
+# ============================================
+# CodeCollab - Complete .gitignore
+# Place this file in your project root
+# ============================================
+
+# ============================================
+# FRONTEND (React/Node.js)
+# ============================================
+
+# Dependencies
+frontend/node_modules/
+frontend/package-lock.json
+frontend/yarn.lock
+frontend/pnpm-lock.yaml
+
+# Testing
+frontend/coverage/
+frontend/.nyc_output/
+
+# Production build
+frontend/build/
+frontend/dist/
+
+# Misc
+frontend/.DS_Store
+frontend/.env
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+# Logs
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/lerna-debug.log*
+
+# IDE
+frontend/.idea/
+frontend/.vscode/
+frontend/*.swp
+frontend/*.swo
+frontend/*~
+
+# ============================================
+# BACKEND (Spring Boot/Java/Maven)
+# ============================================
+
+# Compiled class files
+backend/target/
+backend/bin/
+backend/out/
+backend/build/
+
+# Maven
+backend/.mvn/
+backend/mvnw
+backend/mvnw.cmd
+
+# Gradle
+backend/.gradle/
+backend/gradle/
+
+# Eclipse
+backend/.classpath
+backend/.project
+backend/.settings/
+backend/.metadata/
+
+# IntelliJ IDEA
+backend/.idea/
+backend/*.iml
+backend/*.ipr
+backend/*.iws
+
+# NetBeans
+backend/nbproject/
+backend/nbbuild/
+backend/nbdist/
+backend/.nb-gradle/
+
+# VS Code
+backend/.vscode/
+
+# Spring Boot
+backend/application.properties
+backend/application-*.properties
+backend/application.yml
+backend/application-*.yml
+
+# Keep example files
+!backend/application.properties.example
+!backend/application-*.properties.example
+
+# Logs
+backend/*.log
+backend/logs/
+backend/spring.log
+
+# Temporary files
+backend/*.tmp
+backend/*.temp
+backend/*~
+
+# OS specific
+backend/.DS_Store
+backend/Thumbs.db
+
+# ============================================
+# JUDGE0 / DOCKER
+# ============================================
+
+# Docker volumes
+judge0/postgres-data/
+judge0/redis-data/
+
+# Docker Compose override
+docker-compose.override.yml
+
+# ============================================
+# DATABASE
+# ============================================
+
+# PostgreSQL
+*.sql.backup
+*.dump
+*.backup
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# ============================================
+# SECRETS & CREDENTIALS
+# ============================================
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+
+# Credentials
+*credentials*
+*secrets*
+*password*
+*.pem
+*.key
+*.cert
+*.p12
+*.jks
+
+# JWT keys
+jwt-secret.txt
+private-key.txt
+
+# OAuth
+google-oauth.json
+oauth-credentials.json
+
+# ============================================
+# LOGS
+# ============================================
+
+# All log files
+*.log
+logs/
+log/
+*.log.*
+
+# ============================================
+# OPERATING SYSTEM
+# ============================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# ============================================
+# IDEs & EDITORS
+# ============================================
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# Eclipse
+.project
+.classpath
+.settings/
+.metadata/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+
+# ============================================
+# BUILD & DEPENDENCIES
+# ============================================
+
+# Node modules (anywhere in project)
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# Maven target (anywhere)
+target/
+
+# Gradle build
+build/
+.gradle/
+
+# ============================================
+# TESTING
+# ============================================
+
+# Coverage reports
+coverage/
+*.coverage
+.nyc_output/
+htmlcov/
+
+# Test results
+test-results/
+*.test.log
+
+# ============================================
+# TEMPORARY & CACHE
+# ============================================
+
+# Cache directories
+.cache/
+.npm/
+.yarn/
+.pnp/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+
+# ============================================
+# DOCUMENTATION BUILD
+# ============================================
+
+# Generated documentation
+docs/_build/
+site/
+
+# ============================================
+# DEPLOYMENT
+# ============================================
+
+# Vercel
+.vercel/
+
+# Railway
+.railway/
+
+# Heroku
+.heroku/
+
+# AWS
+.aws/
+.elasticbeanstalk/
+
+# ============================================
+# MISC
+# ============================================
+
+# Package files
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Except Maven Wrapper
+!.mvn/wrapper/maven-wrapper.jar
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Large media files (if any)
+*.mp4
+*.avi
+*.mov
+*.wmv
+# But keep demo video if it's small enough
+!demo-video.mp4
+
+# Compiled Python (if any Python scripts)
+__pycache__/
+*.py[cod]
+*$py.class
+
+# ============================================
+# PROJECT SPECIFIC
+# ============================================
+
+# Submission folder (don't commit final submission)
+*_*_CodeCollab/
+submission/
+
+# Local development
+local/
+dev/
+
+# Personal notes
+TODO.md
+NOTES.md
+notes.txt
+
+# ============================================
+# KEEP THESE FILES (Important!)
+# ============================================
+
+# Keep example configuration files
+!.env.example
+!application.properties.example
+
+# Keep documentation
+!README.md
+!ARCHITECTURE.md
+!SETUP.md
+!*.md
+
+# Keep docker compose
+!docker-compose.yml
+!docker-compose.prod.yml
+
+# Keep GitHub workflows (if any)
+!.github/
+
+# Keep package files
+!package.json
+!pom.xml
+
+# ============================================
+# END OF .gitignore
+# ============================================
