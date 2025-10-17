@@ -420,7 +420,7 @@ Docker Compose Services:
 | Postman | API testing |
 | MySQL Workbench | Database management |
 | VS Code | IDE for frontend |
-| IntelliJ IDEA | IDE for backend |
+| Eclipse| IDE for backend |
 | Docker Desktop | Container management |
 
 ---
