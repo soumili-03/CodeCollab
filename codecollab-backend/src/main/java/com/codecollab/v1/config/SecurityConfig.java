@@ -31,7 +31,7 @@ public class SecurityConfig {
             )
             .oauth2Login(oauth2 -> oauth2
                 .defaultSuccessUrl("/api/auth/google/success", true)
-                .failureUrl("http://localhost:3000/auth/error?message=OAuth2 authentication failed")
+                .failureUrl("http://localhost:3001/auth/error?message=OAuth2 authentication failed")
             )
             .headers(headers -> headers.frameOptions().disable());
 

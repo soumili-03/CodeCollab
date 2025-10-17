@@ -16,7 +16,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3001")
 public class AuthController {
     
     @Autowired
@@ -68,7 +68,7 @@ public class AuthController {
             // Check if OAuth2User is present
             if (oauth2User == null) {
                 System.err.println("OAuth2User is null - authentication context lost");
-                response.sendRedirect("http://localhost:3000/auth/error?message=Authentication context lost");
+                response.sendRedirect("http://localhost:3001/auth/error?message=Authentication context lost");
                 return;
             }
             
@@ -81,7 +81,7 @@ public class AuthController {
             
             if (email == null) {
                 System.err.println("Email not provided by Google");
-                response.sendRedirect("http://localhost:3000/auth/error?message=Email not provided by Google");
+                response.sendRedirect("http://localhost:3001/auth/error?message=Email not provided by Google");
                 return;
             }
             
@@ -94,7 +94,7 @@ public class AuthController {
             System.out.println("Generated token for user: " + user.getUsername());
             
             // Redirect to frontend with token
-            String redirectUrl = String.format("http://localhost:3000/auth/success?token=%s&user=%s", 
+            String redirectUrl = String.format("http://localhost:3001/auth/success?token=%s&user=%s", 
                                               token, user.getUsername());
             
             System.out.println("Redirecting to: " + redirectUrl);
@@ -103,7 +103,7 @@ public class AuthController {
         } catch (Exception e) {
             System.err.println("OAuth2 success handling error: " + e.getMessage());
             e.printStackTrace();
-            response.sendRedirect("http://localhost:3000/auth/error?message=Authentication processing failed");
+            response.sendRedirect("http://localhost:3001/auth/error?message=Authentication processing failed");
         }
     }
     
