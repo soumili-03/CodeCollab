@@ -12,14 +12,14 @@ Competitive programming platforms like LeetCode and HackerRank excel at individu
 - Get instant feedback on code execution
 - Learn collaboratively in a social environment
 
-**CodeCollab solves this** by providing a Netflix Party-style experience for coding - where multiple users can join rooms, solve problems together, and compete in real-time tournaments.
+**CodeCollab solves this** by providing a gamified experience for coding - where multiple users can join rooms, solve problems together, and compete in real-time tournaments.
 
 ---
 
 ## 🚀 Core Features
 
 ### 1. **Individual Problem Solving**
-- Browse 100+ curated coding problems (Easy/Medium/Hard)
+- Browse 30 curated coding problems (Easy/Medium/Hard)
 - Monaco-powered code editor with syntax highlighting
 - Support for 4 languages: C++, Java, Python, JavaScript
 - Real-time code execution with Judge0 integration
@@ -208,7 +208,7 @@ The backend automatically initializes with:
 
 ## 📁 Environment Variables
 
-### Backend (.env or application.properties)
+### Backend (application.properties)
 ```properties
 # Database
 spring.datasource.url=jdbc:postgresql://localhost:5432/codecollab
@@ -383,7 +383,7 @@ docker-compose -f docker-compose.prod.yml up -d
 ## 📊 Performance & Scalability
 
 ### Current Metrics
-- **Concurrent Users**: Supports 50+ simultaneous users
+- **Concurrent Users**: Supports 20+ simultaneous users
 - **Code Execution**: 3-10 seconds per submission
 - **Parallel Processing**: 8 test cases simultaneously
 - **Room Capacity**: 4 members per room, 20+ concurrent rooms
@@ -438,9 +438,8 @@ docker-compose -f docker-compose.prod.yml up -d
 2. **Limited language support**: Only 4 languages (C++, Java, Python, JavaScript)
 3. **Basic ranking system**: No ELO calculation for tournament results
 4. **No code history**: Past submissions not stored
-5. **Mobile experience**: UI needs optimization for tablets/phones
 
-### Roadmap (Next 3 Months)
+### Future Roadmap 
 
 **Phase 1 - Real-time Features**
 - Implement WebSocket for live updates
@@ -487,9 +486,9 @@ MIT License - feel free to use for learning and commercial projects.
 ## 👤 Author
 
 **Your Name**
-- GitHub: [@yourusername](https://github.com/yourusername)
-- LinkedIn: [Your LinkedIn](https://linkedin.com/in/yourprofile)
-- Email: your.email@example.com
+- GitHub: https://github.com/soumili-03
+- LinkedIn: https://linkedin.com/in/soumili-biswas31
+- Email: soumili.biswas3183@gmail.com
 
 ---
 
