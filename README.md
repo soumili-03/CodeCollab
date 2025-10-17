@@ -53,18 +53,18 @@ Competitive programming platforms like LeetCode and HackerRank excel at individu
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                      FRONTEND LAYER                          │
+│                      FRONTEND LAYER                         │
 │  React 18 + Tailwind CSS + Monaco Editor + React Router     │
 └───────────────┬─────────────────────────────────────────────┘
                 │ HTTP/REST (Port 3000)
                 │
 ┌───────────────▼─────────────────────────────────────────────┐
-│                    API GATEWAY LAYER                         │
+│                    API GATEWAY LAYER                        │
 │   Spring Boot 3.2 + Spring Security + JWT Auth (Port 8083)  │
 └───────┬───────────────┬───────────────┬─────────────────────┘
         │               │               │
         │               │               │
-┌───────▼──────┐ ┌──────▼──────┐ ┌─────▼────────────────────┐
+┌───────▼──────┐ ┌──────▼──────┐ ┌───── ▼────────────────────┐
 │   PostgreSQL │ │  Judge0 API  │ │  Google OAuth2           │
 │   Database   │ │  (Port 2358) │ │  Authentication          │
 │              │ │              │ │                          │
