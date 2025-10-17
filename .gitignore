@@ -45,7 +45,7 @@ frontend/*~
 # ============================================
 # BACKEND (Spring Boot/Java/Maven)
 # ============================================
-
+backend/application.properties
 # Compiled class files
 backend/target/
 backend/bin/
