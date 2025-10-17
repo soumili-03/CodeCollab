@@ -1,4 +1,15 @@
-# CodeCollab - System Architecture Documentation
+## CodeCollab - System Architecture Documentation
+
+#Table of Contents
+
+Architecture Overview
+System Components
+Data Flow Diagrams
+Technology Stack
+Database Schema
+API Design
+Security Architecture
+Deployment Architecture
 
 ## 1. Architecture Overview
 
