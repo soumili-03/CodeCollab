@@ -1,6 +1,6 @@
 ## CodeCollab - System Architecture Documentation
 
-#Table of Contents
+Table of Contents
 
 Architecture Overview
 System Components
