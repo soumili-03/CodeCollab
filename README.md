@@ -490,7 +490,7 @@ MIT License - feel free to use for learning and commercial projects.
 
 ---
 
-## 👤 Author
+## 👤 Soumili Biswaas
 
 **Your Name**
 - GitHub: https://github.com/soumili-03
