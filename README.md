@@ -490,9 +490,9 @@ MIT License - feel free to use for learning and commercial projects.
 
 ---
 
-## 👤 Soumili Biswaas
+## 👤 Author
 
-**Your Name**
+**Soumili Biswas**
 - GitHub: https://github.com/soumili-03
 - LinkedIn: https://linkedin.com/in/soumili-biswas31
 - Email: soumili.biswas3183@gmail.com
