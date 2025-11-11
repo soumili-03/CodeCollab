@@ -1,0 +1,1091 @@
+/*lex p6.l
+gcc lex.yy.c -ll
+./a.out < urls.txt
+
+lex p2.l
+gcc lex.yy.c -ll
+./a.out  input.c
+
+yacc -d p7.y
+lex p7.l
+gcc y.tab.c lex.yy.c -o p7 -lfl
+./p7
+
+postfix eg: 23 12 + 
+
+*/
+
+/*p1: comments, spaces, keywords, lines, identifiers, words*/
+%{
+#include <stdio.h>
+
+int comment=0; 
+int keyword=0; 
+int identifier=0; 
+int word=0; 
+int lines=0; 
+int spaces=0; 
+%}
+
+keyword  (printf|scanf|while|for|if|else)
+id       [A-Za-z_][A-Za-z0-9_]*
+%%
+
+"//".*              { comment++; }
+"/*"([^*]|\n|(\*+([^*/]|\n)))*"*"/""   { comment++; }
+
+" "                 { spaces++; }
+\"([^\"\n]|\\\")*\" { word++; }     /* string literal */
+
+{keyword}           { keyword++; word++; }
+{id}                { identifier++; word++; }
+
+\n                  { lines++; }
+
+.                   { /* ignore other chars */ }
+
+%%
+
+int main(int argc, char* argv[]) 
+{ 
+    if (argc==2) 
+    { 
+        yyin=fopen(argv[1],"r"); 
+    } 
+    else 
+    { 
+        yyin=stdin; 
+    } 
+    yylex(); 
+    printf("comments = %d\nspaces = %d\nlines = %d\nwords = %d\nkeywords = %d\nidentifiers = %d\n",
+           comment, spaces, lines, word, keyword, identifier); 
+    return 0; 
+} 
+
+int yywrap() { return 1; }
+
+/*input.c*/
+#include <stdio.h>
+
+int main() {
+    // This is a single-line comment
+    printf("Hello, World!"); /* This is a block comment */
+    int a = 5;
+    int b = 10;
+    int sum = a + b;
+
+    if (sum > 10) {
+        printf("Sum is greater than 10");
+    } else {
+        printf("Sum is 10 or less");
+    }
+
+    for (int i = 0; i < 5; i++) {
+        printf("i = %d", i);
+    }
+
+    return 0;
+}
+/*p2: chars spaces tabs*/
+%{
+int chars=0; 
+int space=0; 
+int tabs=0; 
+%}
+%%
+[	] { tabs++; chars++; } 
+[ ]   { space++; chars++; } 
+.     { chars++; } 
+%%
+int main(int argc, char* argv[]) 
+{ 
+    if (argc==2) 
+    { 
+        yyin=fopen(argv[1],"r"); 
+    } 
+    else 
+    { 
+        printf("Enter the Input"); 
+        yyin=stdin; 
+    } 
+    yylex(); 
+    printf("Total characters = %d", chars); 
+    printf("\nSpaces = %d", space); 
+    printf("\nTabs = %d", tabs); 
+    return 0; 
+} 
+int yywrap() { 
+    return 1; 
+}
+
+/* p3: total tokens*/
+%{
+#include <stdio.h>
+int t=0; 
+%}
+
+%%
+
+\"([^\"\n]|\\\")*\"      { t++; }      /* string literal */
+
+[a-zA-Z_][a-zA-Z0-9_]*   { t++; }      /* identifier / keyword */
+
+[0-9]+                   { t++; }      /* numbers */
+
+[ \t\n]+                 { /* skip whitespace */ }
+
+.                        { t++; }      /* any other single symbol becomes a token */
+
+%%
+
+int main(int argc, char* argv[]) 
+{ 
+    if (argc==2) 
+        yyin=fopen(argv[1],"r"); 
+    else
+        yyin=stdin;
+
+    yylex(); 
+    printf("Total tokens = %d\n", t); 
+    return 0; 
+}
+
+int yywrap() { return 1; }
+
+/*p4:frequency of a word */
+%{
+#include <stdio.h>
+#include <string.h>
+
+char *word_to_count;
+int count = 0;
+%}
+
+%%
+
+[a-zA-Z0-9_]+   {
+                    if(strcmp(yytext, word_to_count)==0)
+                        count++;
+                }
+
+.               { /* ignore other characters */ }
+
+%%
+
+int main(int argc, char* argv[])
+{
+    if(argc != 3) {
+        fprintf(stderr, "Usage: %s <input_file> <word_to_count>\n", argv[0]);
+        return 1;
+    }
+
+    word_to_count = argv[2];   // the word to count
+
+    yyin = fopen(argv[1],"r");
+    if(yyin == NULL) {
+        perror("Error opening file");
+        return 1;
+    }
+
+    yylex();
+
+    printf("Frequency of \"%s\" = %d\n", word_to_count, count);
+
+    fclose(yyin);
+    return 0;
+}
+
+int yywrap() {
+    return 1;
+}
+
+
+/*p5: words starting with a*/
+%{ 
+#include<stdio.h> 
+int count =0; 
+%} 
+ 
+%% 
+^[Aa] {count++;} 
+" "[Aa] {count++;} 
+. {} 
+%% 
+
+int main() 
+{ 
+yylex(); 
+printf("Total matches: %d\n", count); 
+return 0; 
+} 
+int yywrap() { 
+return 1; 
+}
+
+/*p6: words starting and ending with a*/
+%{
+#include <stdio.h>
+int count = 0;
+%}
+
+%%
+
+([Aa])[a-zA-Z]*([Aa])([^a-zA-Z]|$)   { count++; }
+
+[ \t\n]+                             { }     /* skip whitespace */
+
+.                                    { }     /* ignore everything else */
+
+%%
+
+int main()
+{
+    yylex();
+    printf("Total matches: %d\n", count);
+    return 0;
+}
+
+int yywrap(){ return 1; }
+
+/*p7: coversion from uppercase to lowercase and vice versa*/
+%{ 
+%} 
+%% 
+[a-z] { printf("%c", yytext[0]- 32); } 
+[A-Z] { printf("%c", yytext[0]+32); } 
+%% 
+int main() { 
+    yylex(); 
+return 0; 
+} 
+int yywrap() { 
+return 1; 
+}
+
+/*p8: uppercase lowercase non alphabetic character*/
+%{
+#include <stdio.h>
+%}
+
+%%
+
+[a-z]          { printf("Lowercase %s\n", yytext); } 
+[A-Z]          { printf("Uppercase %s\n", yytext); } 
+
+" "            { printf("Non-Alphabetic Character (space)\n"); }
+"\t"           { printf("Non-Alphabetic Character (tab)\n"); }
+"\n"           { printf("Non-Alphabetic Character (newline)\n"); }
+
+.              { printf("Non-Alphabetic Character %s\n", yytext); }
+
+%%
+
+int main()
+{
+    yylex();
+    return 0;
+}
+
+int yywrap()
+{
+    return 1;
+}
+
+/* p9: number of uppercase and lowercase*/
+%{
+#include <stdio.h>
+int upper=0;
+int lower=0;
+%}
+
+%%
+
+[A-Z]    { upper++; }
+[a-z]    { lower++; }
+.        { }
+
+%%
+
+int main(int argc, char* argv[])
+{
+    if (argc==2)
+        yyin=fopen(argv[1],"r");
+    else
+        yyin=stdin;
+
+    yylex();
+
+    printf("number of Uppercase characters: %d\nnumber of Lowercase characters: %d\n",
+           upper, lower);
+
+    return 0;
+}
+
+int yywrap() { return 1; }
+
+
+/*p10: decimal to hex */
+%{
+#include <stdio.h>
+#include <stdlib.h>
+
+void convert_to_hex(const char *text) {
+    double num = atof(text);
+    int int_part = (int)num;
+    double frac_part = num - int_part;
+
+    printf("Decimal: %s\tHex: %X", text, int_part);
+
+    if (frac_part > 0.0) {
+        printf(".");
+        for (int i = 0; i < 4 && frac_part > 0.0; i++) {
+            frac_part *= 16;
+            int digit = (int)frac_part;
+            printf("%X", digit);
+            frac_part -= digit;
+        }
+    }
+
+    printf("\n");   /* newline here */
+}
+%}
+
+%%
+
+[0-9]+\.[0-9]+     { convert_to_hex(yytext); }
+[0-9]+             { convert_to_hex(yytext); }
+[ \t\n]+           { /* ignore spaces */ }
+.                  { printf("Invalid input: %s\n", yytext); }
+
+%%
+
+int main() {
+    yylex();
+    return 0;
+}
+
+int yywrap() {
+    return 1;
+}
+
+/*p11: decimal to binary */
+%{ 
+#include <stdio.h> 
+#include <stdlib.h> 
+ 
+void print_binary_int(int n) { 
+    if (n == 0) { 
+        printf("0"); 
+        return; 
+    } 
+    int bits[32], i = 0; 
+    while (n > 0) { 
+        bits[i++] = n % 2; 
+        n /= 2; 
+    } 
+    for (int j = i - 1; j >= 0; j--) 
+        printf("%d", bits[j]); 
+} 
+ 
+void print_binary_frac(double frac) { 
+    if (frac <= 0) return; 
+    printf("."); 
+    for (int i = 0; i < 8 && frac > 0; i++) { 
+        frac *= 2; 
+        if (frac >= 1) { 
+            printf("1"); 
+            frac -= 1; 
+        } else { 
+            printf("0"); 
+        } 
+    } 
+} 
+ 
+void convert(const char *text) { 
+    double num = atof(text); 
+    int int_part = (int)num; 
+    double frac_part = num - int_part; 
+ 
+    printf("Decimal: %s	Binary: ", text); 
+    print_binary_int(int_part); 
+    print_binary_frac(frac_part); 
+} 
+%} 
+ 
+%% 
+ 
+[0-9]+(.[0-9]+)?  { convert(yytext); } 
+[ 	]+           { /* ignore whitespace */ } 
+.                  { printf("Invalid input: %s", yytext); } 
+ 
+%% 
+ 
+int main() { 
+    yylex(); 
+    return 0; 
+} 
+ 
+int yywrap() { 
+    return 1; 
+}
+
+/*p12: com and org */
+%{
+#include <stdio.h>
+int com=0;
+int org=0;
+%}
+
+%%
+
+.*\.com$                   { com++; }
+
+(http|https)"://"[a-zA-Z0-9./-]+".org" { org++; }
+
+
+.|\n                       { }
+
+%%
+
+int main()
+{
+    yylex();
+    printf("lines ending with .com = %d\n", com);
+    printf("urls ending with .org = %d\n", org);
+    return 0;
+}
+
+int yywrap(){ return 1; }
+
+/*lex and YACC*/
+/*p13:postfix expression evaluation */
+%{
+#include <stdio.h>
+#include <stdlib.h>
+#include "y.tab.h"
+%}
+
+digit   [0-9]+
+op      [-+*/]
+
+%%
+
+{digit}   { yylval.n = atoi(yytext); return oprnd; }
+{op}      { return yytext[0]; }
+[ \t\n]   ;
+.         ;
+%%
+
+int yywrap() {
+    return 1;
+}
+
+
+/*p13: YACC*/
+%{
+#include <stdio.h>
+#include <stdlib.h>
+
+int stack[100];
+int top = -1;
+
+int pop();
+void push(int val);
+%}
+
+%union {
+    int n;
+}
+
+%token <n> oprnd
+
+%%
+S : E { printf("Result = %d\n", pop()); }
+  ;
+
+E : E E '+'  { int a=pop(); int b=pop(); push(b+a); }
+  | E E '-'  { int a=pop(); int b=pop(); push(b-a); }
+  | E E '*'  { int a=pop(); int b=pop(); push(b*a); }
+  | E E '/'  { int a=pop(); int b=pop(); push(b/a); }
+  | oprnd    { push($1); }
+  ;
+%%
+
+void push(int val) {
+    stack[++top] = val;
+}
+int pop() {
+    return stack[top--];
+}
+
+int main() {
+    printf("Enter the postfix expression: ");
+    yyparse();
+    return 0;
+}
+
+int yyerror(const char *s) {
+    fprintf(stderr, "Error: %s\n", s);
+    return 0;
+}
+
+/*p14: infix to postfix expression*/
+%{
+#include "y.tab.h"
+%}
+
+%%
+
+[0-9]      { yylval.c = yytext[0]; return DIGIT; }
+[-+*/()]   { return yytext[0]; }
+[ \t\n]    ;
+.          { printf("Invalid char: %s\n", yytext); }
+
+%%
+int yywrap(){ return 1; }
+
+/*p14: yacc infix*/
+%{
+#include <stdio.h>
+int yylex(void);
+void yyerror(const char *s) { printf("Error: %s\n", s); }
+%}
+
+%union { char c; }
+
+%token <c> DIGIT
+
+%left '+' '-'
+%left '*' '/'
+
+%%
+expr :
+      expr '+' expr   { printf("+ "); }
+    | expr '-' expr   { printf("- "); }
+    | expr '*' expr   { printf("* "); }
+    | expr '/' expr   { printf("/ "); }
+    | '(' expr ')'    { }
+    | DIGIT           { printf("%c ", $1); }
+;
+%%
+
+int main() {
+    printf("Enter infix expression: ");
+    yyparse();
+    printf("\n");
+    return 0;
+}
+
+/* p15: evaluating postfix expressions containing decimal numbers*/
+%{ 
+#include "y.tab.h" 
+%} 
+%% 
+[0-9]+      { yylval.n = atoi(yytext); return oprnd; } 
+[-+*/]     { return yytext[0]; } 
+[ 	]+    ;   // Skip whitespace 
+.           { printf("Invalid character: %s", yytext); } 
+ 
+%% 
+int yywrap() { return 1; } 
+
+/*p15: yacc postfix decimal nos.*/
+%{ 
+#include <stdio.h> 
+#include <stdlib.h> 
+ 
+extern int yylex(); 
+int yyerror(const char*); 
+int pop(); 
+void push(int); 
+int stack[100]; 
+int top = -1; 
+%} 
+%union { 
+    int n; 
+} 
+%token <n> oprnd 
+ 
+%% 
+ 
+S: 
+  | E { printf("Result = %d", pop()); } ; 
+ 
+E: 
+    E E '+' { 
+        int a = pop(), b = pop(); 
+        push(b + a); 
+    } 
+  | E E '-' { 
+        int a = pop(), b = pop(); 
+        push(b - a); 
+    } 
+  | E E '*' { 
+        int a = pop(), b = pop(); 
+        push(b * a); 
+    } 
+  | E E '/' { 
+        int a = pop(), b = pop(); 
+        if (a == 0) { 
+            fprintf(stderr, "Error: Division by zero"); 
+            push(0); 
+        } else { s
+            push(b / a); 
+        } 
+    } 
+  | oprnd { 
+        push($1); 
+    }; 
+ 
+%% 
+ 
+void push(int val) { 
+    stack[++top] = val; 
+} 
+ 
+int pop() { 
+    return stack[top--]; 
+} 
+ 
+int main() { 
+    printf("Enter the postfix expression: "); 
+    yyparse(); 
+    return 0; 
+} 
+ 
+int yyerror(const char *s) { 
+    fprintf(stderr, "Error: %s\n", s); 
+    return 0; 
+}
+
+/*p16: desk calculator with error recovery*/
+%{
+#include "y.tab.h"
+#include <stdlib.h>
+%}
+
+%%
+
+[0-9]+      { yylval = atoi(yytext); return NUMBER; }
+[ \t\n]     { ; }             /* skip whitespace */
+.           { return yytext[0]; }
+
+%%
+
+int yywrap() { return 1; }
+
+/*p16: yacc*/
+%{
+#include <stdio.h>
+#include <stdlib.h>
+
+void yyerror(const char *s);
+int yylex(void);
+%}
+
+%token NUMBER
+
+%left '+' '-'
+%left '*' '/'
+
+%%
+calculation:
+    expression   { printf("= %d\n", $1); }
+    ;
+
+expression:
+      expression '+' expression { $$ = $1 + $3; }
+    | expression '-' expression { $$ = $1 - $3; }
+    | expression '*' expression { $$ = $1 * $3; }
+    | expression '/' expression { if ($3==0){ yyerror("division by zero"); $$=0;} else $$ = $1 / $3; }
+    | '(' expression ')'        { $$ = $2; }
+    | NUMBER                    { $$ = $1; }
+    ;
+%%
+
+void yyerror(const char *s) {
+    fprintf(stderr, "Error: %s\n", s);
+}
+
+int main() {
+    printf("Enter expressions:\n");
+    yyparse();
+    return 0;
+}
+
+/*p17: for loop*/
+%{
+#include<stdio.h>
+#include "y.tab.h"
+%}
+%%
+[ \t\n]+              ;
+"for"                 {return FOR;}
+"("                   {return LP;}
+")"                   {return RP;}
+";"                   {return SC;}
+
+"++"|"--"             {return UOP;}
+"+="                  {return BOP;}     /* put before "+" */
+
+"=="|"<="|">="|"&&"|"||"   {return BOP;}
+"<"|">"|"="|"+"|"-"|"*"|"/" {return BOP;}
+
+[a-zA-Z_][a-zA-Z0-9_]* {return ID;}
+[0-9]+                {return NUM;}
+.                     { }
+%%
+int yywrap() {return 1;}
+
+/*p17: yacc*/
+%{ 
+#include<stdio.h> 
+extern int yylex(); 
+int yyerror(const char *); 
+%} 
+%token FOR LP RP SC ID NUM UOP BOP 
+%% 
+P:S 
+; 
+S: FOR LP E SC E SC E RP  
+{ 
+printf("valid for loop detected"); 
+} 
+; 
+E: ID
+ | NUM
+ | E BOP E
+ | ID UOP
+ | UOP ID
+ ;
+%% 
+int main() 
+{ 
+yyparse(); 
+return 0; 
+} 
+int yyerror(const char *s){ 
+fprintf(stderr, "Errror:%s",s); 
+return 0; 
+}
+
+
+/*p18: while loop*/
+%{
+#include "y.tab.h"
+%}
+
+%%
+
+[ \t]+                    ;      /* ignore spaces & tabs */
+"\n"                      ;      /* ignore newline (we parse multiple lines until EOF) */
+
+"while"                   { return WHILE; }
+"("                       { return LP; }
+")"                       { return RP; }/* multi-character operators MUST come first */
+"=="|"!="|"<="|">="|"&&"|"||"   { return BOP; }
+"<"|">"                 { return BOP; }/* identifiers and numbers */
+[a-zA-Z_][a-zA-Z0-9_]*    { return ID; }
+[0-9]+                    { return NUM; }/* anything else - ignore silently */
+.                         { /* ignore unknown chars */ }
+
+%%
+
+int yywrap(void) { return 1; }
+
+
+/*p18: yacc while loop*/
+%{
+#include <stdio.h>
+int yylex(void);
+int yyerror(const char *s);
+%}
+
+/* tokens */
+%token WHILE LP RP ID NUM BOP
+
+%%
+
+/* allow multiple statements until EOF */
+P :
+    /* empty */
+  | P S
+  ;
+
+S :
+    WHILE LP E RP        { printf("Valid while loop detected\n"); }
+  ;
+
+E :
+    ID
+  | NUM
+  | '(' E ')'
+  | E BOP E
+  ;
+%%
+
+int main(void){
+    /* parse until EOF */
+    yyparse();
+    return 0;
+}
+
+int yyerror(const char *s){
+    fprintf(stderr, "Error: %s\n", s);
+    return 0;
+}
+
+/*p19: switch case*/
+%{
+#include "y.tab.h"
+%}
+
+%%
+"switch"     { return SWITCH; }
+"case"       { return CASE; }
+"default"    { return DEFAULT; }
+"break"      { return BREAK; }
+":"          { return COLON; }
+";"          { return SC; }
+"{"          { return LB; }
+"}"          { return RB; }
+"("          { return LP; }
+")"          { return RP; }
+[a-zA-Z_][a-zA-Z0-9_]*   { return ID; }
+[0-9]+                  { return NUM; }
+[ \t\n]+                ;       /* skip spaces */
+.                       ;       /* ignore others */
+%%
+int yywrap(){ return 1; }
+
+
+/*p19: yacc*/
+%{
+#include <stdio.h>
+int yylex();
+int yyerror(const char *s);
+%}
+
+%token SWITCH CASE DEFAULT BREAK COLON SC LB RB LP RP ID NUM
+
+%%
+P : S ;
+
+S : SWITCH LP ID RP LB CASES DEFAULT_BLOCK RB
+  { printf("Valid switch-case statement\n"); }
+  ;
+
+CASES :
+    CASE NUM COLON ID SC BREAK SC CASES
+  | /* empty */
+  ;
+
+DEFAULT_BLOCK :
+    DEFAULT COLON ID SC BREAK SC
+  | /* empty */
+  ;
+%%
+
+int main() {
+    return yyparse();
+}
+
+int yyerror(const char *s){
+    printf("Error: %s\n",s);
+    return 0;
+}
+
+
+/*p20: intermediate code generator: arithmetic expression with parenthesis*/
+%{
+#include "y.tab.h"
+#include <stdlib.h>
+#include <string.h>
+%}
+
+digit [0-9]+
+id [a-zA-Z_][a-zA-Z0-9_]*
+
+%%
+
+{digit}+       { yylval.ival = atoi(yytext); return NUM; }
+{id}           { yylval.sval = strdup(yytext); return ID; }
+[ ]+       ;          // ignore whitespace
+"="            { return '='; }
+"+"            { return '+'; }
+"-"            { return '-'; }
+"*"            { return '*'; }
+"/"            { return '/'; }
+";"            { return ';'; }
+"("            { return '('; }
+")"            { return ')'; }
+.              { return yytext[0]; }
+
+%%
+
+int yywrap() { return 1; }
+
+/*p20: yacc*/
+%{
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int temp_count = 0;
+
+// Generate a new temporary variable
+char* newTemp() {
+    char* temp = (char*)malloc(5);
+    sprintf(temp, "t%d", temp_count++);
+    return temp;
+}
+
+// Generate intermediate code
+void gen(char* op, char* arg1, char* arg2, char* res) {
+    printf("%s = %s %s %s", res, arg1, op, arg2);
+}
+
+void yyerror(const char *s);
+int yylex();
+%}
+
+%union {
+    int ival;
+    char* sval;
+}
+
+%token <ival> NUM
+%token <sval> ID
+%left '+' '-'
+%left '*' '/'
+%type <sval> expr term factor stmt
+
+%%
+
+prog: stmt_list ;
+
+stmt_list:
+      stmt_list stmt
+    | stmt
+    ;
+
+stmt: ID '=' expr ';' {
+        printf("%s = %s", $1, $3);
+        free($1); free($3);
+    }
+    | expr ';' { free($1); }
+    ;
+
+expr:
+      expr '+' term {
+          char* t = newTemp();
+          gen("+", $1, $3, t);
+          free($1); free($3);
+          $$ = t;
+      }
+    | expr '-' term {
+          char* t = newTemp();
+          gen("-", $1, $3, t);
+          free($1); free($3);
+          $$ = t;
+      }
+    | term { $$ = $1; }
+    ;
+
+term:
+      term '*' factor {
+          char* t = newTemp();
+          gen("*", $1, $3, t);
+          free($1); free($3);
+          $$ = t;
+      }
+    | term '/' factor {
+          char* t = newTemp();
+          gen("/", $1, $3, t);
+          free($1); free($3);
+          $$ = t;
+      }
+    | factor { $$ = $1; }
+    ;
+
+factor: '(' expr ')' { $$ = $2; } // Handles parentheses
+    | NUM {
+          char* t = (char*)malloc(10);
+          sprintf(t, "%d", $1);
+          $$ = t;
+      }
+    | ID { $$ = strdup($1); }
+    ;
+
+%%
+
+int main() {
+    printf("Enter arithmetic expressions with parentheses:");
+    yyparse();
+    return 0;
+}
+
+void yyerror(const char *s) {
+    printf("Error: %s", s);
+}
+
+/*p21: lex calculator*/
+%{
+#include <stdio.h>
+#include <stdlib.h>
+
+int result = 0;
+int num;
+char op = '+';
+%}
+
+%%
+[0-9]+      { num = atoi(yytext);
+              if(op == '+') result += num;
+              else if(op == '-') result -= num;
+              else if(op == '*') result *= num;
+              else if(op == '/') result /= num;
+            }
+[-+*/]     { op = yytext[0]; }
+
+\n          { printf("Result = %d\n", result); result = 0; op='+'; }
+[ ]+        { /* ignore spaces */ }
+.           { printf("Invalid character: %s\n", yytext); }
+%%
+
+int main() {
+    yylex();
+    return 0;
+}
+
+
+/*p22: digits and operators*/
+%{
+#include <stdio.h>
+%}
+
+%%
+[0-9]+      { printf("Digit: %s", yytext); }
+[-+*/]     { printf("\nOperator: %s", yytext); }
+[ ]+    { /* ignore whitespace */ }
+.           { printf("\nInvalid character: %s\n", yytext); }
+%%
+
+int main() {
+    yylex();
+    return 0;
+}
+
+/*p23: valid email*/
+%{
+#include <stdio.h>
+%}
+
+%%
+[a-zA-Z0-9._]+@[a-zA-Z0-9]+.[a-zA-Z]+  { printf("Valid email: %s", yytext); }
+%%
+
+int main() {
+    yylex();
+    return 0;
+}
